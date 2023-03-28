@@ -17,6 +17,8 @@
 #       --save-pdf: Save PDF copy of entire audit to the current folder
 #                   as audit.pdf
 
+# Chris A. s#######, James A. s1032252, Chip J. s#######
+
 import sys
 from selenium import webdriver
 from selenium.webdriver.common.by import By
