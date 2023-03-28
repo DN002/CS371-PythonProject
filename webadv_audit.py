@@ -61,6 +61,17 @@ select_next.click()
 time.sleep(1)
 
 # Type password & Enter
+password_input = driver.find_element(By.ID, 'passwordInput')
+try:
+    p = getpass.getpass(prompt='Password?')
+except Exception as error:
+    print('ERROR', error)
+    print('Incorrect user ID or password. Exiting.')
+    exit(-1)
+else:
+    print('Password entered!')
+
+time.sleep(2)
 
 # Submit if all good, exit with error if bad
 
