@@ -143,7 +143,6 @@ time.sleep(10)
 # parse the following information from your academic audit:
 # set up beautiful soup to parse info:
 url = driver.current_url
-print(url)
 response = requests.get(url)
 soup = BeautifulSoup(response.content, 'html.parser')
 table = soup.find("table", id = "StudentTable")
