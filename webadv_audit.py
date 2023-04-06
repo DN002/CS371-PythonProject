@@ -1,4 +1,3 @@
-
 # Chris A. s1171536, James A. s1032252, Chip J. s1248459
 
 import sys
@@ -13,6 +12,15 @@ import requests
 # Write a Python selenium script to parse your info
 # The script will normally take one cmd arg:
 # python webadv_audit.py s1100841
+
+#To be taken out
+#Inserted for testing purposes
+chipsID = "1248459"
+JamesID = "1032252"
+ChrisID = "1171536"
+
+#When testing, set testID to your name and ID for auto testing later :)
+testID = chipsID
 
 # If the script has no cmd args, the --help option, or
 # an unknown option must display program description & usage
@@ -151,6 +159,8 @@ table = soup.find("table", id = "StudentTable")
 studentName = ""
 #Program and Catalog
 program = ""
+programAbbr = ""
+catalog = ""
 #Anticipated Completion Date
 antCompleteDate = ""
 #Advisor
@@ -167,12 +177,27 @@ higherCredits = ""
 #Total credits earned (out of 120 required)
 totalCredits = ""
 
+
 # Successful Retrieval should be like:
 # Academic Audit Summary
+print("Academic Audit Summary")
 # ======================
+print("============================================")
 # Name: 		Larlos Cargo (1100841)
+print("Name:\t\t", studentName, "(", testID, ")")
 # Program:	BA Computer Science (CS.BA)
+print("Program:\t", program, "(", programAbbr, ")")
 # Catalog:	C2021
+print("Catalog:\t", catalog)
 # Anticipated Completion Date:	05/15/23
-# ...
-# ...
+print("Anticipated Completion Date:\t", antCompleteDate)
+#Advisor
+print("Advisor:\t", advisor)
+#Class Level
+print("Class Level:\t", classLevel)
+#InProgress
+#NotStarted
+#200+ level Credits earned
+print("200+ level Credits Earned:\t", higherCredits)
+#Total Credits Earned
+print("Total Credits\t", totalCredits)
