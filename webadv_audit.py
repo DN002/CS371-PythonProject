@@ -1,5 +1,5 @@
 
-# Chris A. s1171536, James A. s1032252, Chip J. s#######
+# Chris A. s1171536, James A. s1032252, Chip J. s1248459
 
 import sys
 from selenium import webdriver
