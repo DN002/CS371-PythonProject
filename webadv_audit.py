@@ -7,6 +7,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select        # for dropdown menus
 from selenium.webdriver.chrome.options import Options   # for 'headless' chrome
 import time                                             # implement pauses
+from bs4 import BeautifulSoup
+import requests
 
 # Write a Python selenium script to parse your info
 # The script will normally take one cmd arg:
@@ -126,20 +128,25 @@ students_menu.click()
 # select "Academic Audit / Pgm Eval" link
 acadmeic_audit = driver.find_element(By.LINK_TEXT, 'Academic Audit/Pgm Eval')
 acadmeic_audit.click()
-time.sleep(5)
+time.sleep(3)
 
 # select 'Active Program' radio button
 radio_button = driver.find_element(By.NAME, 'LIST.VAR1_RADIO')
 radio_button.click()
-time.sleep(5)
+time.sleep(3)
 
 # select 'Submit' button
 audit_submit = driver.find_element(By.NAME, 'SUBMIT2')
 audit_submit.click()
-time.sleep(10)
+time.sleep(3)
 
-#parse the following information from your academic audit:
-
+# parse the following information from your academic audit:
+# set up beautiful soup to parse info:
+url = driver.current_url
+print(url)
+response = requests.get(url)
+soup = BeautifulSoup(response.content, 'html.parser')
+table = soup.find("table", id = "StudentTable")
 
 #Your name and student id
 studentName = ""
@@ -170,5 +177,3 @@ totalCredits = ""
 # Anticipated Completion Date:	05/15/23
 # ...
 # ...
-
-driver.close()
