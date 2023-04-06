@@ -38,9 +38,7 @@ def usageStatement():
 # arg = ''
 #Will be commented out by hand in, my id is for testing without needing command line
 #set to your own id for testing easier
-testid = "s1248459"
-arg = testid
-saveToPDF = False
+arg = sys.argv[1]
 
 #If the script is run with no commandline arguments,
 #CHANGE NUMBER TO ACCURATE REPRESENTATION
@@ -79,9 +77,11 @@ import getpass
 
 # instance of Options class for headless Chrome
 options = Options()
+# this stops the annoying token error apparently
+options.add_experimental_option('excludeSwitches', ['enable-logging'])
 
 # Parameter to tell Chrome that it should run with no UI (headless)
-# options.headless = True
+# options.headless = False
 
 driver = webdriver.Chrome(options=options)
 
@@ -106,26 +106,37 @@ time.sleep(1)
 
 # Type password & Enter
 password_input = driver.find_element(By.ID, 'passwordInput')
+submit_button = driver.find_element(By.ID, 'submitButton')
 try:
-    p = getpass.getpass(prompt='Password?')
+    p = getpass.getpass(prompt='Enter password for ' + str(arg) + ': ')
+    password_input.send_keys(p)
+    submit_button.click()
 except Exception as error:
     print('ERROR', error)
     print('Incorrect user ID or password. Exiting.')
     exit(-1)
 else:
     print('Password entered!')
-
 time.sleep(2)
 
-# Submit if all good, exit with error if bad
-
 # select "Students" menu
+students_menu = driver.find_element(By.ID, 'mainMenu')
+students_menu.click()
 
 # select "Academic Audit / Pgm Eval" link
+acadmeic_audit = driver.find_element(By.LINK_TEXT, 'Academic Audit/Pgm Eval')
+acadmeic_audit.click()
+time.sleep(5)
 
 # select 'Active Program' radio button
+radio_button = driver.find_element(By.NAME, 'LIST.VAR1_RADIO')
+radio_button.click()
+time.sleep(5)
 
 # select 'Submit' button
+audit_submit = driver.find_element(By.NAME, 'SUBMIT2')
+audit_submit.click()
+time.sleep(10)
 
 #parse the following information from your academic audit:
 
@@ -159,3 +170,5 @@ totalCredits = ""
 # Anticipated Completion Date:	05/15/23
 # ...
 # ...
+
+driver.close()
