@@ -119,7 +119,7 @@ except Exception as error:
     exit(-1)
 else:
     print('Password entered!')
-time.sleep(2)
+time.sleep(1)
 
 # select "Students" menu
 students_menu = driver.find_element(By.ID, 'mainMenu')
