@@ -1,4 +1,13 @@
 
+# Chris A. s1171536, James A. s1032252, Chip J. s#######
+
+import sys
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import Select        # for dropdown menus
+from selenium.webdriver.chrome.options import Options   # for 'headless' chrome
+import time                                             # implement pauses
+
 # Write a Python selenium script to parse your info
 # The script will normally take one cmd arg:
 # python webadv_audit.py s1100841
@@ -16,19 +25,52 @@
 #       --help:	     Display this help information and exit
 #       --save-pdf: Save PDF copy of entire audit to the current folder
 #                   as audit.pdf
-
-# Chris A. s#######, James A. s1032252, Chip J. s#######
-
-import sys
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import Select        # for dropdown menus
-from selenium.webdriver.chrome.options import Options   # for 'headless' chrome
-import time                                             # implement pauses
+def usageStatement():
+   #it must display a program description and program usage statement:
+   print("Usage: python3 webadv_audit.py [--option] [student id, e.g., s1100841]")  
+   print("where [--option] can be:")
+   print("--help:      Display this help information and exit")
+   print("--save-pdf: Save PDF copy of entire audit to the current folder")
+   print("as audit.pdf")
 
 # Handle args
 # arg = sys.argv[1]
-arg = 's1171536'
+# arg = ''
+#Will be commented out by hand in, my id is for testing without needing command line
+#set to your own id for testing easier
+testid = "s1248459"
+arg = testid
+saveToPDF = False
+
+#If the script is run with no commandline arguments,
+#CHANGE NUMBER TO ACCURATE REPRESENTATION
+if(False):#len(sys.argv) < 1
+   usageStatement()#it must display a program description and program usage statement
+   exit()
+#the --help option,
+#CHECK FOR HELP
+if(len(sys.argv) > 3):
+   if(sys.argv[2] == '--help'):
+      usageStatement()#it must display a program description and program usage statement
+      exit()
+
+
+      #If the --save-pdf option was used,
+      #CHECK FOR OPTIONS
+   elif(sys.argv[2] == '--save-pdf'):
+      saveToPDF = True
+   #the parsed audit summary must still be displayed,
+   #and the PDF of the entire audit must be saved to the current folder as audit.pdf.
+   #or an unknown option,
+   
+    # If the --save-pdf option was used, the 
+    # parsed audit summary must still be displayed, and the PDF of 
+    # the entire audit must be saved to the current folder as audit.pdf.
+
+   else:
+      usageStatement()
+      exit()
+
 
 # use the getpass module to enter the password when trying to login.
 # If the password is wrong. display the error message:
@@ -85,6 +127,29 @@ time.sleep(2)
 
 # select 'Submit' button
 
+#parse the following information from your academic audit:
+
+
+#Your name and student id
+studentName = ""
+#Program and Catalog
+program = ""
+#Anticipated Completion Date
+antCompleteDate = ""
+#Advisor
+advisor = ""
+#Class Level
+classLevel = ""
+#Graduation requirements that are "In Progress" (not individual classes)
+#
+#Graduation requirements that are "Not Started" (not individual classes)
+#
+
+#Credits earned at 200+ level (out of 54 required)
+higherCredits = ""
+#Total credits earned (out of 120 required)
+totalCredits = ""
+
 # Successful Retrieval should be like:
 # Academic Audit Summary
 # ======================
@@ -94,7 +159,3 @@ time.sleep(2)
 # Anticipated Completion Date:	05/15/23
 # ...
 # ...
-
-# If the --save-pdf option was used, the 
-# parsed audit summary must still be displayed, and the PDF of 
-# the entire audit must be saved to the current folder as audit.pdf.
