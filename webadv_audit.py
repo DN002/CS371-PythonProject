@@ -128,17 +128,17 @@ students_menu.click()
 # select "Academic Audit / Pgm Eval" link
 acadmeic_audit = driver.find_element(By.LINK_TEXT, 'Academic Audit/Pgm Eval')
 acadmeic_audit.click()
-time.sleep(3)
+time.sleep(1)
 
 # select 'Active Program' radio button
 radio_button = driver.find_element(By.NAME, 'LIST.VAR1_RADIO')
 radio_button.click()
-time.sleep(3)
+time.sleep(1)
 
 # select 'Submit' button
 audit_submit = driver.find_element(By.NAME, 'SUBMIT2')
 audit_submit.click()
-time.sleep(3)
+time.sleep(10)
 
 # parse the following information from your academic audit:
 # set up beautiful soup to parse info:
