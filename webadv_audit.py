@@ -29,6 +29,7 @@ options.add_argument('--headless')
 
 driver = webdriver.Chrome(options=options)
 driver.get('https://webadvisor.monmouth.edu')
+savePDF = False
 
 # Write a Python selenium script to parse your info
 # The script will normally take one cmd arg:
@@ -58,6 +59,7 @@ def saveToPDF(pdf_html):
    driver.maximize_window()
    time.sleep(5)
    converter.convert(f'file:///{path}', 'audit.pdf')
+   os.remove('page.html')
 
 # function to print usage statement
 def usageStatement():
@@ -83,7 +85,7 @@ if(len(sys.argv) > 3):
       #If the --save-pdf option was used,
       #CHECK FOR OPTIONS
    elif(sys.argv[2] == '--save-pdf'):
-      saveToPDF = True
+      savePDF = True
       # If the --save-pdf option was used, the 
       # parsed audit summary must still be displayed, and the PDF of 
       # the entire audit must be saved to the current folder as audit.pdf.
@@ -233,8 +235,10 @@ totalCredits = audit_table.find_element(By.XPATH,
 print('(out of 120 req) Total ' + totalCredits.text)
 
 pdf_html = driver.page_source
-
-saveToPDF(pdf_html)
+if savePDF == True:
+   saveToPDF(pdf_html)
+elif savePDF == False:
+   pass
 
 # Successful Retrieval should be like:
 # Academic Audit Summary
