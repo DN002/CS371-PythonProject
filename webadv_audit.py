@@ -148,8 +148,8 @@ program_td = driver.find_element(By.XPATH, "// td[contains(text(),\
 program_parent = program_td.find_element(By.XPATH, "..")
 antCompleteDate_td = driver.find_element(By.XPATH, '//*[@id="StudentTable"]/tbody/tr[3]/td/table/tbody/tr[3]')
 antCompleteDate_parent = antCompleteDate_td.find_element(By.XPATH, '//*[@id="StudentTable"]/tbody/tr[3]/td/table/tbody/tr[3]')
-advisor_td = driver.find_element(By.XPATH, '//*[@id="StudentTable"]/tbody/tr[4]/td')
-advisor_lines = (advisor_td.text).split('\n')
+advisor_body = driver.find_element(By.XPATH, '//*[@id="StudentTable"]/tbody/tr[4]/td')
+advisor_lines = (advisor_body.text).split('\n')
 advisor_lines_length = len(advisor_lines)
 advisor_parent = advisor_lines[14]
 class_level = advisor_lines[15]
@@ -174,6 +174,7 @@ print(class_level)
 
 soup = bs4.BeautifulSoup(driver.page_source, 'html.parser')
 child_in_prog = soup.find_all('b', {'class' : 'StatusOthers'})
+child_not_started = soup.find_all('b', {'class' : 'StatusNotStarted'})
 
 #Graduation requirements that are "In Progress" (not individual classes)
 print("\n============  In Progress ============")
@@ -190,7 +191,13 @@ print("============================================")
 
 #Graduation requirements that are "Not Started" (not individual classes)
 print("\n============  Not Started ============")
-
+for item in child_not_started:
+   parent_not_started = item.parent
+   text = parent_not_started.text
+   if 'Electives:' in text and '(Not started)' in text:
+      text = text.replace('\n', '')
+   text = text.replace('(Not started)', '')
+   print('Section - ' + text)
 print("============================================")
 
 #Credits earned at 200+ level (out of 54 required)
