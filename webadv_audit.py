@@ -127,12 +127,10 @@ time.sleep(1)
 acadmeic_audit = driver.find_element(By.LINK_TEXT, 'Academic Audit/Pgm Eval')
 acadmeic_audit.click()
 time.sleep(1)
-time.sleep(1)
 
 # select 'Active Program' radio button
 radio_button = driver.find_element(By.NAME, 'LIST.VAR1_RADIO')
 radio_button.click()
-time.sleep(1)
 time.sleep(1)
 
 # select 'Submit' button
@@ -156,21 +154,34 @@ class_level = advisor_lines[15]
 
 # Your name and student id
 student_Name = studentName.text
-print(student_Name)
+new_student_Name = student_Name.replace("Student:", "Name:\t\t\t\t")
+updated_student_Name = new_student_Name.split("(")[0].strip()
+studName = new_student_Name.replace(new_student_Name, updated_student_Name)
+# very blunt way of removing the titles before the name
+try:
+   new_studName = studName.replace("Mr. ", "").replace("Mrs. ", "").replace("Ms. ", "")
+except:
+   pass
+print(new_studName)
 
 #Program and Catalog
 program = program_parent.text
-print(program)
+new_program = program.replace("Program:", "Program:\t\t\t")
+print(new_program)
 
 #Anticipated Completion Date
 antCompleteDate = antCompleteDate_parent.text
-print(antCompleteDate)
+new_antCompleteDate = antCompleteDate.replace("Date:", "Date:\t")
+updated_antCompleteDate = new_antCompleteDate.replace("Anticipated\n", "Anticipated ")
+print(updated_antCompleteDate)
 
 #Advisor
-print(advisor_parent)
+new_advisor_parent = advisor_parent.replace("Advisor:", "Advisor:\t\t\t")
+print(new_advisor_parent)
 
 #Class Level
-print(class_level)
+new_class_level = class_level.replace("Level:", "Level:\t\t\t")
+print(new_class_level)
 
 soup = bs4.BeautifulSoup(driver.page_source, 'html.parser')
 child_in_prog = soup.find_all('b', {'class' : 'StatusOthers'})
@@ -178,7 +189,6 @@ child_not_started = soup.find_all('b', {'class' : 'StatusNotStarted'})
 
 #Graduation requirements that are "In Progress" (not individual classes)
 print("\n============  In Progress ============")
-
 # gets the parent tags to see what sections status
 for item in child_in_prog:
     parent_in_prog = item.parent
