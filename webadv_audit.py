@@ -1,4 +1,5 @@
 # Chris A. s1171536, James A. s1032252, Chip J. s1248459
+# CS 371
 
 import sys
 from selenium import webdriver
@@ -8,6 +9,9 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.chrome.options import Options   # for 'headless' chrome
 import time                                             # implement pauses
 import requests, bs4
+import os
+import json
+from pyhtml2pdf import converter
 
 # use the getpass module to enter the password when trying to login.
 # If the password is wrong. display the error message:
@@ -18,13 +22,10 @@ import getpass
 options = Options()
 # this stops the annoying token error apparently
 options.add_experimental_option('excludeSwitches', ['enable-logging'])
-
-# I was getting "Javascript is currently disabled. Javascript is required for WebAdvisor functionality and must be enabled before proceeding." 
-# when trying to parse the info from the audit page using bs4, apparently this will fix it(?)
 options.add_argument("--enable-javascript")
-
-# Parameter to tell Chrome that it should run with no UI (headless)
-# options.headless = False
+options.add_argument('--ignore-certificate-errors')
+options.add_argument('--kiosk-printing')
+options.add_argument('--headless')
 
 driver = webdriver.Chrome(options=options)
 driver.get('https://webadvisor.monmouth.edu')
@@ -46,8 +47,21 @@ driver.get('https://webadvisor.monmouth.edu')
 #       --help:	     Display this help information and exit
 #       --save-pdf: Save PDF copy of entire audit to the current folder
 #                   as audit.pdf
+
+# function that saves the input html to a pdf file
+def saveToPDF(pdf_html):
+   with open('page.html', 'w') as f:
+      f.write(pdf_html)
+   if os.path.exists('audit.pdf'):
+      os.remove('audit.pdf')
+   path = os.path.abspath('page.html')
+   driver.maximize_window()
+   time.sleep(5)
+   converter.convert(f'file:///{path}', 'audit.pdf')
+
+# function to print usage statement
 def usageStatement():
-   #it must display a program description and program usage statement:
+   # it must display a program description and program usage statement:
    print("Usage: python3 webadv_audit.py [--option] [student id, e.g., s1100841]")  
    print("where [--option] can be:")
    print("--help:      Display this help information and exit")
@@ -115,8 +129,6 @@ except Exception as error:
     exit(-1)
 else:
     print('Password entered!')
-time.sleep(1)
-time.sleep(1)
 
 # select "Students" menu
 students_menu = driver.find_element(By.ID, 'mainMenu')
@@ -219,6 +231,10 @@ print('(out of 54 req) 200+ level ' + higherCredits.text)
 totalCredits = audit_table.find_element(By.XPATH, 
    '/html/body/div/div[2]/div[4]/div[3]/table/tbody/tr[8]/td/table[7]/tbody/tr/td/table[2]/tbody/tr[2]/td')
 print('(out of 120 req) Total ' + totalCredits.text)
+
+pdf_html = driver.page_source
+
+saveToPDF(pdf_html)
 
 # Successful Retrieval should be like:
 # Academic Audit Summary
