@@ -169,7 +169,6 @@ antCompleteDate_parent = antCompleteDate_td.find_element(By.XPATH, '//*[@id="Stu
 advisor_td = driver.find_element(By.XPATH, '//*[@id="StudentTable"]/tbody/tr[4]/td')
 advisor_lines = (advisor_td.text).split('\n')
 advisor_lines_length = len(advisor_lines)
-print(advisor_lines_length)
 advisor_parent = advisor_lines[14]
 class_level = advisor_lines[15]
 
@@ -204,15 +203,15 @@ totalCredits = ""
 
 # Successful Retrieval should be like:
 # Academic Audit Summary
-print("Academic Audit Summary")
+# print("Academic Audit Summary")
 # ======================
-print("============================================")
+# print("============================================")
 # Name: 		Larlos Cargo (1100841)
-print("Name:\t\t", studentName, "(", testID, ")")
+# print("Name:\t\t", studentName, "(", testID, ")")
 # Program:	BA Computer Science (CS.BA)
-print("Program:\t", program, "(", programAbbr, ")")
+# print("Program:\t", program, "(", programAbbr, ")")
 # Catalog:	C2021
-print("Catalog:\t", catalog)
+# print("Catalog:\t", catalog)
 # Anticipated Completion Date:	05/15/23
 # ...
 # ...
