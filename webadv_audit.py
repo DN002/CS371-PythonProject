@@ -3,23 +3,35 @@
 import sys
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import Select        # for dropdown menus
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.chrome.options import Options   # for 'headless' chrome
 import time                                             # implement pauses
-import requests
+import requests, bs4
+
+# use the getpass module to enter the password when trying to login.
+# If the password is wrong. display the error message:
+# 'Incorrect user ID or password. Exiting.' and exit program
+import getpass
+
+# instance of Options class for headless Chrome
+options = Options()
+# this stops the annoying token error apparently
+options.add_experimental_option('excludeSwitches', ['enable-logging'])
+
+# I was getting "Javascript is currently disabled. Javascript is required for WebAdvisor functionality and must be enabled before proceeding." 
+# when trying to parse the info from the audit page using bs4, apparently this will fix it(?)
+options.add_argument("--enable-javascript")
+
+# Parameter to tell Chrome that it should run with no UI (headless)
+# options.headless = False
+
+driver = webdriver.Chrome(options=options)
+driver.get('https://webadvisor.monmouth.edu')
 
 # Write a Python selenium script to parse your info
 # The script will normally take one cmd arg:
 # python webadv_audit.py s1100841
-
-#To be taken out
-#Inserted for testing purposes
-chipsID = "1248459"
-JamesID = "1032252"
-ChrisID = "1171536"
-
-#When testing, set testID to your name and ID for auto testing later :)
-testID = chipsID
 
 # If the script has no cmd args, the --help option, or
 # an unknown option must display program description & usage
@@ -42,12 +54,6 @@ def usageStatement():
    print("--save-pdf: Save PDF copy of entire audit to the current folder")
    print("as audit.pdf")
 
-# Handle args
-# arg = sys.argv[1]
-# arg = ''
-#Will be commented out by hand in, my id is for testing without needing command line
-#set to your own id for testing easier
-
 #If the script is run with no commandline arguments,
 #CHANGE NUMBER TO ACCURATE REPRESENTATION
 if(len(sys.argv) < 1):
@@ -64,13 +70,10 @@ if(len(sys.argv) > 3):
       #CHECK FOR OPTIONS
    elif(sys.argv[2] == '--save-pdf'):
       saveToPDF = True
-   #the parsed audit summary must still be displayed,
-   #and the PDF of the entire audit must be saved to the current folder as audit.pdf.
-   #or an unknown option,
-   
-    # If the --save-pdf option was used, the 
-    # parsed audit summary must still be displayed, and the PDF of 
-    # the entire audit must be saved to the current folder as audit.pdf.
+      # If the --save-pdf option was used, the 
+      # parsed audit summary must still be displayed, and the PDF of 
+      # the entire audit must be saved to the current folder as audit.pdf.
+
 
    else:
       usageStatement()
@@ -81,27 +84,6 @@ try:
 except:
    usageStatement()
    exit()
-
-# use the getpass module to enter the password when trying to login.
-# If the password is wrong. display the error message:
-# 'Incorrect user ID or password. Exiting.' and exit program
-import getpass
-
-# instance of Options class for headless Chrome
-options = Options()
-# this stops the annoying token error apparently
-options.add_experimental_option('excludeSwitches', ['enable-logging'])
-
-# I was getting "Javascript is currently disabled. Javascript is required for WebAdvisor functionality and must be enabled before proceeding." 
-# when trying to parse the info from the audit page using bs4, apparently this will fix it(?)
-options.add_argument("--enable-javascript")
-
-# Parameter to tell Chrome that it should run with no UI (headless)
-# options.headless = False
-
-driver = webdriver.Chrome(options=options)
-
-driver.get('https://webadvisor.monmouth.edu')
 
 # load page
 time.sleep(1)
@@ -190,10 +172,26 @@ print(advisor_parent)
 #Class Level
 print(class_level)
 
+soup = bs4.BeautifulSoup(driver.page_source, 'html.parser')
+child_in_prog = soup.find_all('b', {'class' : 'StatusOthers'})
+
 #Graduation requirements that are "In Progress" (not individual classes)
-#
+print("\n============  In Progress ============")
+
+# gets the parent tags to see what sections status
+for item in child_in_prog:
+    parent_in_prog = item.parent
+    text = parent_in_prog.text
+    if 'Electives:' in text and '(Pending completion of unfinished activity)' in text:
+        text = text.replace('\n', '')
+    text = text.replace('(Pending completion of unfinished activity)', '')
+    print('Section - ' + text)
+print("============================================")
+
 #Graduation requirements that are "Not Started" (not individual classes)
-#
+print("\n============  Not Started ============")
+
+print("============================================")
 
 #Credits earned at 200+ level (out of 54 required)
 higherCredits = audit_table.find_element(By.XPATH, 
@@ -207,15 +205,10 @@ print('(out of 120 req) Total ' + totalCredits.text)
 
 # Successful Retrieval should be like:
 # Academic Audit Summary
-# print("Academic Audit Summary")
 # ======================
-# print("============================================")
 # Name: 		Larlos Cargo (1100841)
-# print("Name:\t\t", studentName, "(", testID, ")")
 # Program:	BA Computer Science (CS.BA)
-# print("Program:\t", program, "(", programAbbr, ")")
 # Catalog:	C2021
-# print("Catalog:\t", catalog)
 # Anticipated Completion Date:	05/15/23
 # ...
 # ...
