@@ -29,7 +29,8 @@ options.add_argument('--headless')
 
 driver = webdriver.Chrome(options=options)
 driver.get('https://webadvisor.monmouth.edu')
-savePDF = False
+global save_pdf
+save_pdf = False
 
 # Write a Python selenium script to parse your info
 # The script will normally take one cmd arg:
@@ -57,7 +58,7 @@ def saveToPDF(pdf_html):
       os.remove('audit.pdf')
    path = os.path.abspath('page.html')
    driver.maximize_window()
-   time.sleep(5)
+   time.sleep(1)
    converter.convert(f'file:///{path}', 'audit.pdf')
    os.remove('page.html')
 
@@ -78,26 +79,23 @@ if(len(sys.argv) < 1):
 #the --help option,
 #CHECK FOR HELP
 if(len(sys.argv) > 3):
-   if(sys.argv[2] == '--help'):
+   if(sys.argv[1] == '--help' or sys.argv[2] == '--help'):
       usageStatement()#it must display a program description and program usage statement
       exit()
 
       #If the --save-pdf option was used,
       #CHECK FOR OPTIONS
-   elif(sys.argv[2] == '--save-pdf'):
-      savePDF = True
-      # If the --save-pdf option was used, the 
-      # parsed audit summary must still be displayed, and the PDF of 
-      # the entire audit must be saved to the current folder as audit.pdf.
-
 
    else:
       usageStatement()
       exit()
-
-try:
-   arg = sys.argv[1]
-except:
+if (sys.argv[1].startswith('s')):
+   try:
+      arg = sys.argv[1]
+   except:
+      usageStatement()
+      exit()
+else:
    usageStatement()
    exit()
 
@@ -113,6 +111,7 @@ time.sleep(1)
 # Type username & Enter
 username_input = driver.find_element(By.ID, 'userNameInput')
 username_input.send_keys(arg)
+
 
 select_next = driver.find_element(By.ID, 'nextButton')
 select_next.click()
@@ -234,10 +233,12 @@ totalCredits = audit_table.find_element(By.XPATH,
    '/html/body/div/div[2]/div[4]/div[3]/table/tbody/tr[8]/td/table[7]/tbody/tr/td/table[2]/tbody/tr[2]/td')
 print('(out of 120 req) Total ' + totalCredits.text)
 
+# generate pdf if args are correct
 pdf_html = driver.page_source
-if savePDF == True:
-   saveToPDF(pdf_html)
-elif savePDF == False:
+try:
+   if(sys.argv[2] == '--save-pdf'):
+      saveToPDF(pdf_html)
+except:
    pass
 
 # Successful Retrieval should be like:
