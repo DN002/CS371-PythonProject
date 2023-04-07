@@ -7,6 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select        # for dropdown menus
 from selenium.webdriver.chrome.options import Options   # for 'headless' chrome
 import time                                             # implement pauses
+import requests
 
 # Write a Python selenium script to parse your info
 # The script will normally take one cmd arg:
@@ -38,11 +39,10 @@ def usageStatement():
 # arg = ''
 #Will be commented out by hand in, my id is for testing without needing command line
 #set to your own id for testing easier
-arg = sys.argv[1]
 
 #If the script is run with no commandline arguments,
 #CHANGE NUMBER TO ACCURATE REPRESENTATION
-if(False):#len(sys.argv) < 1
+if(len(sys.argv) < 1):
    usageStatement()#it must display a program description and program usage statement
    exit()
 #the --help option,
@@ -51,7 +51,6 @@ if(len(sys.argv) > 3):
    if(sys.argv[2] == '--help'):
       usageStatement()#it must display a program description and program usage statement
       exit()
-
 
       #If the --save-pdf option was used,
       #CHECK FOR OPTIONS
@@ -69,6 +68,11 @@ if(len(sys.argv) > 3):
       usageStatement()
       exit()
 
+try:
+   arg = sys.argv[1]
+except:
+   usageStatement()
+   exit()
 
 # use the getpass module to enter the password when trying to login.
 # If the password is wrong. display the error message:
@@ -79,6 +83,10 @@ import getpass
 options = Options()
 # this stops the annoying token error apparently
 options.add_experimental_option('excludeSwitches', ['enable-logging'])
+
+# I was getting "Javascript is currently disabled. Javascript is required for WebAdvisor functionality and must be enabled before proceeding." 
+# when trying to parse the info from the audit page using bs4, apparently this will fix it(?)
+options.add_argument("--enable-javascript")
 
 # Parameter to tell Chrome that it should run with no UI (headless)
 # options.headless = False
@@ -117,40 +125,61 @@ except Exception as error:
     exit(-1)
 else:
     print('Password entered!')
-time.sleep(2)
+time.sleep(1)
 
 # select "Students" menu
 students_menu = driver.find_element(By.ID, 'mainMenu')
 students_menu.click()
+time.sleep(1)
 
 # select "Academic Audit / Pgm Eval" link
 acadmeic_audit = driver.find_element(By.LINK_TEXT, 'Academic Audit/Pgm Eval')
 acadmeic_audit.click()
-time.sleep(5)
+time.sleep(1)
 
 # select 'Active Program' radio button
 radio_button = driver.find_element(By.NAME, 'LIST.VAR1_RADIO')
 radio_button.click()
-time.sleep(5)
+time.sleep(1)
 
 # select 'Submit' button
 audit_submit = driver.find_element(By.NAME, 'SUBMIT2')
 audit_submit.click()
-time.sleep(10)
+time.sleep(1)
 
-#parse the following information from your academic audit:
+# finding parent elements for each audit element
+audit_table = driver.find_element(By.XPATH, "//table[@id='StudentTable']")
+studentName = audit_table.find_element(By.CLASS_NAME, 'PersonName')
+program_td = driver.find_element(By.XPATH, "// td[contains(text(),\
+'Program: ')]")
+program_parent = program_td.find_element(By.XPATH, "..")
+antCompleteDate_td = driver.find_element(By.XPATH, '//*[@id="StudentTable"]/tbody/tr[3]/td/table/tbody/tr[3]')
+antCompleteDate_parent = antCompleteDate_td.find_element(By.XPATH, '//*[@id="StudentTable"]/tbody/tr[3]/td/table/tbody/tr[3]')
+advisor_td = driver.find_element(By.XPATH, '//*[@id="StudentTable"]/tbody/tr[4]/td')
+advisor_lines = (advisor_td.text).split('\n')
+advisor_lines_length = len(advisor_lines)
+print(advisor_lines_length)
+advisor_parent = advisor_lines[14]
+class_level = advisor_lines[15]
 
+# Your name and student id
+student_Name = studentName.text
+print(student_Name)
 
-#Your name and student id
-studentName = ""
 #Program and Catalog
-program = ""
+program = program_parent.text
+print(program)
+
 #Anticipated Completion Date
-antCompleteDate = ""
+antCompleteDate = antCompleteDate_parent.text
+print(antCompleteDate)
+
 #Advisor
-advisor = ""
+print(advisor_parent)
+
 #Class Level
-classLevel = ""
+print(class_level)
+
 #Graduation requirements that are "In Progress" (not individual classes)
 #
 #Graduation requirements that are "Not Started" (not individual classes)
@@ -170,5 +199,3 @@ totalCredits = ""
 # Anticipated Completion Date:	05/15/23
 # ...
 # ...
-
-driver.close()
