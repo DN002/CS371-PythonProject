@@ -71,33 +71,20 @@ def usageStatement():
    print("--save-pdf: Save PDF copy of entire audit to the current folder")
    print("as audit.pdf")
 
-#If the script is run with no commandline arguments,
-#CHANGE NUMBER TO ACCURATE REPRESENTATION
-if(len(sys.argv) < 1):
-   usageStatement()#it must display a program description and program usage statement
-   exit()
-#the --help option,
-#CHECK FOR HELP
-if(len(sys.argv) > 3):
-   if(sys.argv[1] == '--help' or sys.argv[2] == '--help'):
-      usageStatement()#it must display a program description and program usage statement
-      exit()
-
-      #If the --save-pdf option was used,
-      #CHECK FOR OPTIONS
-
-   else:
-      usageStatement()
-      exit()
-if (sys.argv[1].startswith('s')):
-   try:
-      arg = sys.argv[1]
-   except:
-      usageStatement()
-      exit()
-else:
+# check for args
+if len(sys.argv) < 2:
    usageStatement()
-   exit()
+   sys.exit()
+
+try:
+   if (sys.argv[1].startswith('s') or sys.argv[2].startswith('s')):
+      arg = sys.argv[len(sys.argv)-1]
+except:
+   sys.exit()
+
+if "--help" in sys.argv:
+   usageStatement()
+   sys.exit()
 
 # load page
 time.sleep(1)
@@ -110,7 +97,10 @@ time.sleep(1)
 # Handle login
 # Type username & Enter
 username_input = driver.find_element(By.ID, 'userNameInput')
-username_input.send_keys(arg)
+try:
+   username_input.send_keys(arg)
+except:
+   sys.exit()
 
 
 select_next = driver.find_element(By.ID, 'nextButton')
@@ -236,7 +226,7 @@ print('(out of 120 req) Total ' + totalCredits.text)
 # generate pdf if args are correct
 pdf_html = driver.page_source
 try:
-   if(sys.argv[2] == '--save-pdf'):
+   if(sys.argv[1] == '--save-pdf'):
       saveToPDF(pdf_html)
 except:
    pass
