@@ -196,10 +196,14 @@ print(class_level)
 #
 
 #Credits earned at 200+ level (out of 54 required)
-higherCredits = ""
-#Total credits earned (out of 120 required)
-totalCredits = ""
+higherCredits = audit_table.find_element(By.XPATH, 
+   '/html/body/div/div[2]/div[4]/div[3]/table/tbody/tr[8]/td/table[6]/tbody/tr/td/table[2]/tbody/tr[2]/td')
+print('(out of 54 req) 200+ level ' + higherCredits.text)
 
+#Total credits earned (out of 120 required)
+totalCredits = audit_table.find_element(By.XPATH, 
+   '/html/body/div/div[2]/div[4]/div[3]/table/tbody/tr[8]/td/table[7]/tbody/tr/td/table[2]/tbody/tr[2]/td')
+print('(out of 120 req) Total ' + totalCredits.text)
 
 # Successful Retrieval should be like:
 # Academic Audit Summary
